@@ -46,29 +46,27 @@ public class ApplicationUI extends UI {
 
     private void setUpMenu(MenuBar mainMenu) {
         //info
-        final MenuBar.MenuItem info = mainMenu.addItem("Information", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem info = mainMenu.addItem("Information", new ThemeResource("info.png"), null);
         info.setDescription("Info");
-        final MenuBar.MenuItem infoHowToUse = info.addItem("How to Use", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem infoHowToUse = info.addItem("How to Use", new ThemeResource("info.png"), null);
         infoHowToUse.setDescription("How to use application");
-        final MenuBar.MenuItem infoRollfight = info.addItem("What is RollFight", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem infoRollfight = info.addItem("What is RollFight", new ThemeResource("info.png"), null);
         infoRollfight.setDescription("RollFight");
-        final MenuBar.MenuItem infoSystem = info.addItem("Application info", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem infoSystem = info.addItem("Application info", new ThemeResource("info.png"), null);
         infoSystem.setDescription("Application Version");
-        
+
         //rollfight
-        final MenuBar.MenuItem rollfight = mainMenu.addItem("Rollfight", new ThemeResource("swords.png"), null);
-        final MenuBar.MenuItem rollfightCommon = rollfight.addItem("Common", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem rollfight = mainMenu.addItem("Rollfight", new ThemeResource("rollfight.ico"), null);
+        final MenuBar.MenuItem rollfightCommon = rollfight.addItem("Common", new ThemeResource("rollfight.ico"), null);
         rollfightCommon.setDescription("Common");
-        final MenuBar.MenuItem rollfightSpells = rollfight.addItem("Spells", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem rollfightSpells = rollfight.addItem("Spells", new ThemeResource("rollfight.ico"), null);
         rollfightSpells.setDescription("Spells");
-        final MenuBar.MenuItem rollfightCharGenerator = rollfight.addItem("Character Generator", new ThemeResource("swords.png"), null);
-        rollfightCharGenerator.setDescription("Character Generator");
 
         //Characters
         final MenuBar.MenuItem character = mainMenu.addItem("Character", new ThemeResource("swords.png"), null);
-        final MenuBar.MenuItem characterStuff = character.addItem("Characters", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem characterStuff = character.addItem("Characters", new ThemeResource("character.png"), null);
         characterStuff.setDescription("Characters");
-        final MenuBar.MenuItem characterGenerator = character.addItem("Generate character", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem characterGenerator = character.addItem("Generate character", new ThemeResource("generate.png"), null);
         characterGenerator.setDescription("Generate character");
     }
 
