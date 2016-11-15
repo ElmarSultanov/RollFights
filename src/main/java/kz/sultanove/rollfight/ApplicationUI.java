@@ -27,7 +27,6 @@ public class ApplicationUI extends UI {
     protected void init(VaadinRequest request) {
         VerticalLayout rootLayout = new VerticalLayout();
         rootLayout.setSizeFull();
-        final MenuBar.Command callMenu;
 
         final Panel headerPanel = new Panel("Myth-Application 0.1v");
         headerPanel.setIcon(new ThemeResource("swords.png"));
@@ -35,7 +34,6 @@ public class ApplicationUI extends UI {
 
         final MenuBar mainMenu = new MenuBar();
         setUpMenu(mainMenu);
-
 
         final Panel bottomPanel = new Panel("Created by Myth Ⓒ 2016");
         bottomPanel.setReadOnly(true);
