@@ -2,12 +2,13 @@ package kz.sultanove.rollfight;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.*;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -19,50 +20,56 @@ import javax.servlet.annotation.WebServlet;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("mytheme")
-public class ApplicationUI extends UI implements View {
-    Navigator navigator;
-    protected static final String MAINVIEW = "main";
-
-    public ApplicationUI(){
-        setSizeFull();
-
-            getPage().setTitle("Navigation Example");
-            navigator = new Navigator(this, this);
-            navigator.addView("", new ScreenView());
-            navigator.addView(MAINVIEW, new ApplicationUI());
-
-            final VerticalLayout layout = new VerticalLayout();
-            final Label header = new Label("Добро пожаловать!");
-            header.setWidthUndefined();
-            final Label body = new Label("Приветствую, ролевик. Ты находишься на стартовой странице приложения Myth-Application 0.1v!" +
-                    " Что бы продолжить знакомство с этой чудестной программой нажми кнопку \"Войти\"." +
-                    " Что бы поддержать проект поставь плюсик на сам знаешь какому форуме, сам знаешь кому или поставь минус Ухо, спасибо!");
-            Button button = new Button("Войти");
-            button.addClickListener((Button.ClickListener) clickEvent -> {
-                navigator.navigateTo(MAINVIEW);
-                //  Notification.show("Во имя Милорда!","  Враги Альянса устроили саботаж! Функция временно не доступна, агенты Си-9 уже работают над этим.", Notification.Type.ERROR_MESSAGE);
-            });
-
-            layout.addComponents(header, body,button);
-            layout.setComponentAlignment(header, Alignment.MIDDLE_CENTER);
-            layout.setComponentAlignment(body, Alignment.MIDDLE_CENTER);
-            layout.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
-            layout.setMargin(true);
-            layout.setSpacing(true);
-            layout.setSizeFull();
-            setContent(layout);
-
-    }
-
-    @Override
-    protected void init(VaadinRequest vaadinRequest) {
-
-    }
+public class ApplicationUI extends UI {
 
 
     @Override
-    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+    protected void init(VaadinRequest request) {
+        VerticalLayout rootLayout = new VerticalLayout();
+        rootLayout.setSizeFull();
+        final MenuBar.Command callMenu;
 
+        final Panel headerPanel = new Panel("Myth-Application 0.1v");
+        headerPanel.setIcon(new ThemeResource("swords.png"));
+        headerPanel.setReadOnly(true);
+
+        final MenuBar mainMenu = new MenuBar();
+        setUpMenu(mainMenu);
+
+
+        final Panel bottomPanel = new Panel("Created by Myth Ⓒ 2016");
+        bottomPanel.setReadOnly(true);
+
+        rootLayout.addComponents(headerPanel, mainMenu, bottomPanel);
+        setContent(rootLayout);
+    }
+
+    private void setUpMenu(MenuBar mainMenu) {
+        //info
+        final MenuBar.MenuItem info = mainMenu.addItem("Information", new ThemeResource("swords.png"), null);
+        info.setDescription("Info");
+        final MenuBar.MenuItem infoHowToUse = info.addItem("How to Use", new ThemeResource("swords.png"), null);
+        infoHowToUse.setDescription("How to use application");
+        final MenuBar.MenuItem infoRollfight = info.addItem("What is RollFight", new ThemeResource("swords.png"), null);
+        infoRollfight.setDescription("RollFight");
+        final MenuBar.MenuItem infoSystem = info.addItem("Application info", new ThemeResource("swords.png"), null);
+        infoSystem.setDescription("Application Version");
+        
+        //rollfight
+        final MenuBar.MenuItem rollfight = mainMenu.addItem("Rollfight", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem rollfightCommon = rollfight.addItem("Common", new ThemeResource("swords.png"), null);
+        rollfightCommon.setDescription("Common");
+        final MenuBar.MenuItem rollfightSpells = rollfight.addItem("Spells", new ThemeResource("swords.png"), null);
+        rollfightSpells.setDescription("Spells");
+        final MenuBar.MenuItem rollfightCharGenerator = rollfight.addItem("Character Generator", new ThemeResource("swords.png"), null);
+        rollfightCharGenerator.setDescription("Character Generator");
+
+        //Characters
+        final MenuBar.MenuItem character = mainMenu.addItem("Character", new ThemeResource("swords.png"), null);
+        final MenuBar.MenuItem characterStuff = character.addItem("Characters", new ThemeResource("swords.png"), null);
+        characterStuff.setDescription("Characters");
+        final MenuBar.MenuItem characterGenerator = character.addItem("Generate character", new ThemeResource("swords.png"), null);
+        characterGenerator.setDescription("Generate character");
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
