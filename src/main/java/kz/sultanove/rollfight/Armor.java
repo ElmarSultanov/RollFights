@@ -5,7 +5,7 @@ package kz.sultanove.rollfight;
  */
 public class Armor {
     Integer id;
-    byte armorType;
+    String armorType;
     String armorDescription;
 
     public Integer getId() {
@@ -16,11 +16,11 @@ public class Armor {
         this.id = id;
     }
 
-    public byte getArmorType() {
+    public String getArmorType() {
         return armorType;
     }
 
-    public void setArmorType(byte armorType) {
+    public void setArmorType(String armorType) {
         this.armorType = armorType;
     }
 

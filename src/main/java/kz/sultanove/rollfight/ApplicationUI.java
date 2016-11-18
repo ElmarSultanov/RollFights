@@ -23,11 +23,14 @@ public class ApplicationUI extends UI {
     final ApplicationInfoWindow win = new ApplicationInfoWindow();
     final VerticalLayout rootLayout = new VerticalLayout();
     Collection<Weapon> weaponCollection = new ArrayList<>();
-    BeanItemContainer<Weapon> container;
+    Collection<Spell> spellCollection = new ArrayList<>();
+    BeanItemContainer<Spell> spellContainer;
+    BeanItemContainer<Weapon> weaponContainer;
     HorizontalLayout applicationLayout = new HorizontalLayout();
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     Table weaponTable;
+    Table spellTable;
     BrowserFrame  page = new BrowserFrame("Генератор персонажа", new ExternalResource(
             "http://rpstats.co.nf/"));
 
@@ -40,8 +43,10 @@ public class ApplicationUI extends UI {
                     "jdbc:postgresql://localhost:5432/Myth", "postgres",
                     "111");
             getDataFromDB(connection);
-            container = new BeanItemContainer<>(Weapon.class, weaponCollection);
-            weaponTable = new Table("Weapon Table", container);
+            spellContainer = new BeanItemContainer<>(Spell.class, spellCollection);
+            weaponContainer = new BeanItemContainer<>(Weapon.class, weaponCollection);
+            weaponTable = new Table("Weapon Table", weaponContainer);
+            spellTable = new Table("Spell Table", spellContainer);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -60,10 +65,13 @@ public class ApplicationUI extends UI {
 
 
         rootLayout.addComponents(headerPanel, mainMenu, applicationLayout, bottomPanel);
-        rootLayout.setSpacing(false);
-        rootLayout.setMargin(false);
-        rootLayout.setSizeFull();
-        applicationLayout.setSizeUndefined();
+
+        applicationLayout.setHeight("100%");
+        applicationLayout.setWidth("100%");
+
+    //    rootLayout.setHeight("100%");
+        rootLayout.setWidth("100%");
+        rootLayout.setSpacing(true);
         setContent(rootLayout);
     }
 
@@ -78,6 +86,17 @@ public class ApplicationUI extends UI {
                 weapon.setName(rs.getString("name"));
                 weapon.setDescription(rs.getString("description"));
                 weaponCollection.add(weapon);
+            }
+            preparedStatement = connection.prepareStatement("select * from \"Spell\"");
+            rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Spell spell = new Spell();
+                spell.setId(rs.getInt("id"));
+                spell.setName(rs.getString("name"));
+                spell.setSpellDescription(rs.getString("description"));
+                spell.setSpellLevel(rs.getInt("level"));
+                spell.setSpellSchool(rs.getString("school"));
+                spellCollection.add(spell);
             }
             preparedStatement.close();
             connection.close();
@@ -96,8 +115,15 @@ public class ApplicationUI extends UI {
         };
         MenuBar.Command characterGeneratorCommand = (MenuBar.Command) menuItem ->{
             applicationLayout.removeAllComponents();
-            page.setSizeFull();
+            page.setHeight("750px");
+            page.setWidth("100%");
             applicationLayout.addComponent(page);
+
+        };
+        MenuBar.Command rollfightSpellCommand = (MenuBar.Command) menuItem ->{
+            applicationLayout.removeAllComponents();
+            spellTable.setSizeFull();
+            applicationLayout.addComponent(spellTable);
         };
 
 
@@ -119,7 +145,7 @@ public class ApplicationUI extends UI {
         rollfightMelee.setDescription("Ближний бой");
         final MenuBar.MenuItem rollfightRange = rollfight.addItem("Дальний бой", new ThemeResource("bow.png"), inProgress);
         rollfightRange.setDescription("Дальний бой");
-        final MenuBar.MenuItem rollfightSpells = rollfight.addItem("Заклинания", new ThemeResource("magic.png"), inProgress);
+        final MenuBar.MenuItem rollfightSpells = rollfight.addItem("Заклинания", new ThemeResource("magic.png"), rollfightSpellCommand);
         rollfightSpells.setDescription("Описание вошлебства");
 
         //Characters

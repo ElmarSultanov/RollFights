@@ -4,10 +4,16 @@ package kz.sultanove.rollfight;
  * Created by e.sultanov on 16.11.2016.
  */
 public class Spell {
-    Integer id;
-    byte spellLevel;
-    String spellSchool;
-    String spellDescription;
+    private Integer id;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+    private int spellLevel;
+    private String spellSchool;
+    private String spellDescription;
 
     public Integer getId() {
         return id;
@@ -17,11 +23,11 @@ public class Spell {
         this.id = id;
     }
 
-    public byte getSpellLevel() {
+    public int getSpellLevel() {
         return spellLevel;
     }
 
-    public void setSpellLevel(byte spellLevel) {
+    public void setSpellLevel(int spellLevel) {
         this.spellLevel = spellLevel;
     }
 
@@ -39,5 +45,9 @@ public class Spell {
 
     public void setSpellDescription(String spellDescription) {
         this.spellDescription = spellDescription;
+    }
+
+    public String getName() {
+        return name;
     }
 }
