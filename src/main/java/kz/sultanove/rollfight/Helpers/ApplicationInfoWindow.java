@@ -1,4 +1,4 @@
-package kz.sultanove.rollfight;
+package kz.sultanove.rollfight.Helpers;
 
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;

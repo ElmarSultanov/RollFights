@@ -1,4 +1,4 @@
-package kz.sultanove.rollfight;
+package kz.sultanove.rollfight.Entity;
 
 /**
  * Created by e.sultanov on 16.11.2016.

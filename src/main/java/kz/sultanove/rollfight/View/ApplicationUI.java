@@ -1,10 +1,17 @@
-package kz.sultanove.rollfight;
+package kz.sultanove.rollfight.View;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.server.*;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
+import kz.sultanove.rollfight.Entity.Character;
+import kz.sultanove.rollfight.Entity.Spell;
+import kz.sultanove.rollfight.Entity.Weapon;
+import kz.sultanove.rollfight.Helpers.ApplicationInfoWindow;
 
 import javax.servlet.annotation.WebServlet;
 import java.sql.*;
@@ -24,13 +31,16 @@ public class ApplicationUI extends UI {
     final VerticalLayout rootLayout = new VerticalLayout();
     Collection<Weapon> weaponCollection = new ArrayList<>();
     Collection<Spell> spellCollection = new ArrayList<>();
+    Collection<Character> characterCollection = new ArrayList<>();
     BeanItemContainer<Spell> spellContainer;
     BeanItemContainer<Weapon> weaponContainer;
+    BeanItemContainer<Character> characterContainer;
     HorizontalLayout applicationLayout = new HorizontalLayout();
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     Table weaponTable;
     Table spellTable;
+    Table characterTable;
     BrowserFrame  page = new BrowserFrame("Генератор персонажа", new ExternalResource(
             "http://rpstats.co.nf/"));
 
@@ -43,10 +53,7 @@ public class ApplicationUI extends UI {
                     "jdbc:postgresql://localhost:5432/Myth", "postgres",
                     "111");
             getDataFromDB(connection);
-            spellContainer = new BeanItemContainer<>(Spell.class, spellCollection);
-            weaponContainer = new BeanItemContainer<>(Weapon.class, weaponCollection);
-            weaponTable = new Table("Weapon Table", weaponContainer);
-            spellTable = new Table("Spell Table", spellContainer);
+            initTable();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -69,12 +76,19 @@ public class ApplicationUI extends UI {
         applicationLayout.setHeight("100%");
         applicationLayout.setWidth("100%");
 
-    //    rootLayout.setHeight("100%");
         rootLayout.setWidth("100%");
         rootLayout.setSpacing(true);
         setContent(rootLayout);
     }
 
+    private void initTable() {
+        spellContainer = new BeanItemContainer<>(Spell.class, spellCollection);
+        weaponContainer = new BeanItemContainer<>(Weapon.class, weaponCollection);
+        characterContainer = new BeanItemContainer<>(Character.class, characterCollection);
+        weaponTable = new Table("Weapon Table", weaponContainer);
+        spellTable = new Table("Spell Table", spellContainer);
+        characterTable = new Table("Character Table", characterContainer);
+    }
 
 
     private void getDataFromDB(Connection connection) throws SQLException {
@@ -98,6 +112,26 @@ public class ApplicationUI extends UI {
                 spell.setSpellSchool(rs.getString("school"));
                 spellCollection.add(spell);
             }
+            preparedStatement = connection.prepareStatement("select * from \"Character\"");
+            rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Character character = new Character();
+                character.setId(rs.getInt("id"));
+                character.setCharacterName(rs.getString("name"));
+                character.setStrenght(rs.getInt("strength"));
+                character.setAgility(rs.getInt("agility"));
+                character.setConstitution(rs.getInt("constitution"));
+                character.setIntellegence(rs.getInt("intelligence"));
+                character.setWillpower(rs.getInt("willpower"));
+                character.setPerseption(rs.getInt("perseption"));
+                character.setAlignment(rs.getString("alignment"));
+                character.setExpPoint(rs.getInt("experience"));
+                character.setCharacterLevel(rs.getInt("level"));
+                character.setMovement(rs.getString("movement"));
+                character.setAbility(rs.getString("ability"));
+                character.setSpell("spell");
+                characterCollection.add(character);
+            }
             preparedStatement.close();
             connection.close();
         }
@@ -113,6 +147,11 @@ public class ApplicationUI extends UI {
             weaponTable.setSizeFull();
             applicationLayout.addComponent(weaponTable);
         };
+        MenuBar.Command rollfightSpellCommand = (MenuBar.Command) menuItem ->{
+            applicationLayout.removeAllComponents();
+            spellTable.setSizeFull();
+            applicationLayout.addComponent(spellTable);
+        };
         MenuBar.Command characterGeneratorCommand = (MenuBar.Command) menuItem ->{
             applicationLayout.removeAllComponents();
             page.setHeight("750px");
@@ -120,10 +159,14 @@ public class ApplicationUI extends UI {
             applicationLayout.addComponent(page);
 
         };
-        MenuBar.Command rollfightSpellCommand = (MenuBar.Command) menuItem ->{
+        MenuBar.Command characterShowCommand = (MenuBar.Command) menuItem ->{
             applicationLayout.removeAllComponents();
-            spellTable.setSizeFull();
-            applicationLayout.addComponent(spellTable);
+            characterTable.setSizeFull();
+            characterTable.setColumnCollapsingAllowed(true);
+//            characterTable.setColumnCollapsed(1, true);
+//            characterTable.setColumnCollapsed(2, true);
+//            characterTable.setColumnCollapsed(3, true);
+            applicationLayout.addComponent(characterTable);
         };
 
 
@@ -150,7 +193,7 @@ public class ApplicationUI extends UI {
 
         //Characters
         final MenuBar.MenuItem character = mainMenu.addItem("Персонажи", new ThemeResource("swords.png"), null);
-        final MenuBar.MenuItem characterForm = character.addItem("Анекты", new ThemeResource("character.png"), inProgress);
+        final MenuBar.MenuItem characterForm = character.addItem("Анекты", new ThemeResource("character.png"), characterShowCommand);
         characterForm.setDescription("Анкета персонажей");
         final MenuBar.MenuItem npcStuff = character.addItem("НПС", new ThemeResource("character.png"), inProgress);
         npcStuff.setDescription("НПСы");
