@@ -9,6 +9,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
 import kz.sultanove.rollfight.Entity.Character;
+import kz.sultanove.rollfight.Entity.Postgresql;
 import kz.sultanove.rollfight.Entity.Spell;
 import kz.sultanove.rollfight.Entity.Weapon;
 import kz.sultanove.rollfight.Helpers.ApplicationInfoWindow;
@@ -27,6 +28,7 @@ import java.util.Collection;
  */
 @Theme("mytheme")
 public class ApplicationUI extends UI {
+    Postgresql postgresql = new Postgresql();
     final ApplicationInfoWindow win = new ApplicationInfoWindow();
     final VerticalLayout rootLayout = new VerticalLayout();
     Collection<Weapon> weaponCollection = new ArrayList<>();
@@ -93,7 +95,7 @@ public class ApplicationUI extends UI {
 
     private void getDataFromDB(Connection connection) throws SQLException {
         if (connection != null){
-            preparedStatement = connection.prepareStatement("select * from \"Weapon\"");
+            preparedStatement = connection.prepareStatement(postgresql.getSelectWeapon());
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Weapon weapon = new Weapon();
@@ -101,7 +103,7 @@ public class ApplicationUI extends UI {
                 weapon.setDescription(rs.getString("description"));
                 weaponCollection.add(weapon);
             }
-            preparedStatement = connection.prepareStatement("select * from \"Spell\"");
+            preparedStatement = connection.prepareStatement(postgresql.getSelectSpell());
             rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Spell spell = new Spell();
@@ -112,7 +114,7 @@ public class ApplicationUI extends UI {
                 spell.setSpellSchool(rs.getString("school"));
                 spellCollection.add(spell);
             }
-            preparedStatement = connection.prepareStatement("select * from \"Character\"");
+            preparedStatement = connection.prepareStatement(postgresql.getSelectCharacter());
             rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Character character = new Character();
@@ -130,6 +132,7 @@ public class ApplicationUI extends UI {
                 character.setMovement(rs.getString("movement"));
                 character.setAbility(rs.getString("ability"));
                 character.setSpell("spell");
+                character.setWeaponName_byId(rs.getString("\"Weapon\".name"));
                 characterCollection.add(character);
             }
             preparedStatement.close();
@@ -163,9 +166,6 @@ public class ApplicationUI extends UI {
             applicationLayout.removeAllComponents();
             characterTable.setSizeFull();
             characterTable.setColumnCollapsingAllowed(true);
-//            characterTable.setColumnCollapsed(1, true);
-//            characterTable.setColumnCollapsed(2, true);
-//            characterTable.setColumnCollapsed(3, true);
             applicationLayout.addComponent(characterTable);
         };
 

@@ -33,6 +33,32 @@ public class Character {
     String alignment;
     String spell;
 
+    public String getWeaponName_byId() {
+        return weaponName_byId;
+    }
+
+    public void setWeaponName_byId(String weaponName_byId) {
+        this.weaponName_byId = weaponName_byId;
+    }
+
+    public Integer getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(Integer intelligence) {
+        this.intelligence = intelligence;
+    }
+
+    public Integer getStrength() {
+        return strength;
+    }
+
+    public void setStrength(Integer strength) {
+        this.strength = strength;
+    }
+
+    String weaponName_byId;
+
     public String getAbility() {
         return ability;
     }
